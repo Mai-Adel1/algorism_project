@@ -142,6 +142,72 @@ void parseMatchResults(FILE* file, TeamVertix* teams[], int* num_teams) {
 
 }
 
+
+
+// Function to perform breadth-first search and calculate the standings up to the specified round
+void calculateStandingsBFS(TeamVertix* teams[], int num_teams, int round_number) {
+  // Reset the visited flags
+  for (int i = 0; i < num_teams; i++) {
+    teams[i]->visited = 0;
+  }
+
+  // Initialize the BFS queue
+  TeamVertix* queue[MAX_TEAMS];
+  int front = 0;
+  int rear = 0;
+
+  // Enqueue the first team
+  queue[rear++] = teams[0];
+  teams[0]->visited = 1;
+
+  // Perform BFS traversal
+  while (front < rear) {
+    // Dequeue a team
+    TeamVertix* current_team = queue[front++];
+    current_team->matches_played = 0;
+    current_team->wins = 0;
+    current_team->draws = 0;
+    current_team->losses = 0;
+    current_team->goals_for = 0;
+    current_team->goals_against = 0;
+    current_team->goal_difference = 0;
+    current_team->points = 0;
+
+    Edge* edge = current_team->edges;
+    while (edge != NULL) {
+      if (edge->round <= round_number) {
+        current_team->matches_played++;
+        current_team->goals_for += edge->home_goals;
+        current_team->goals_against += edge->away_goals;
+        current_team->goal_difference += (edge->home_goals - edge->away_goals);
+
+        if (edge->home_goals > edge->away_goals) {
+          current_team->wins++;
+          current_team->points += 3;
+        } else if (edge->home_goals < edge->away_goals) {
+          current_team->losses++;
+        } else {
+          current_team->draws++;
+          current_team->points++;
+        }
+      }
+
+      // Enqueue the opponent team if not visited
+      if (!edge->opponent->visited) {
+        queue[rear++] = edge->opponent;
+        edge->opponent->visited = 1;
+      }
+
+      edge = edge->next;
+    }
+  }
+}
+
+
+
+
+
+
       int main() {
   FILE* file = fopen("epl_results.CSV", "r");
   if (file == NULL) {
