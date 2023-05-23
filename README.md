@@ -1,1 +1,1 @@
-# algorism_project
+# algorithm_project
