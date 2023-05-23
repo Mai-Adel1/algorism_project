@@ -204,6 +204,48 @@ void calculateStandingsBFS(TeamVertix* teams[], int num_teams, int round_number)
 }
 
 
+// Function to print the league standings up to the specified round
+
+void printStandings(TeamVertix* teams[], int num_teams, int round_number) {
+
+  // Sort the teams array in descending order of points and goal difference (GD)
+
+  for (int i = 0; i < num_teams - 1; i++) {
+
+    for (int j = i + 1; j < num_teams; j++) {
+
+      if (teams[i]->points < teams[j]->points ||  (teams[i]->points == teams[j]->points && teams[i]->goal_difference < teams[j]->goal_difference)) {
+
+        // Swap the positions of the two teams in the array
+
+        TeamVertix* temp = teams[i];
+
+        teams[i] = teams[j];
+
+        teams[j] = temp;
+
+      }
+
+    }
+
+  }
+
+  printf("%-5s %-20s %-9s %-5s %-5s %-5s %-5s %-5s %-5s %-7s\n", "Pos", "Team", "Matches", "W", "D", "L", "GF", "GA", "GD", "Points");
+
+  for (int i = 0; i < num_teams; i++) {
+
+    TeamVertix*team= teams[i];
+
+    if (team->matches_played > 0 && team->matches_played <= round_number) {
+
+      printf("%-5d %-20s %-9d %-5d %-5d %-5d %-5d %-5d %-5d %-7d\n", i + 1, team->name, team->matches_played, team->wins, team->drawns, team->losses, team->goals_for, team->goals_against, team->goal_difference, team->points);
+
+    }
+
+  }
+
+}
+
 
 
 
