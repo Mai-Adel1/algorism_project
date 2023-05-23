@@ -5,6 +5,85 @@
 #define MAX_TEAMS 20
 #define MAX_MATCHES 600
 
+typedef struct TeamVertix {
+  char name[20];
+  struct Edge* edges;
+  int num_edges;
+  int matches_played;
+  int wins;
+  int draws;
+  int losses;
+  int goals_for;
+  int goals_against;
+  int goal_difference;
+  int points;
+  struct TeamVertix* next;  // For BFS traversal
+  int visited;  // For BFS traversal
+} TeamVertix;
+
+typedef struct Edge {
+  struct TeamVertix* opponent;
+  int round;
+  char date[11];
+  int home_goals;
+  int away_goals;
+  struct Edge* next;
+} Edge;
+
+// Function to find a team node in the teams array
+TeamVertix* findTeamVertix(TeamVertix* teams[], int num_teams, const char* team_name) {
+  for (int i = 0; i < num_teams; i++) {
+    if (strcmp(teams[i]->name, team_name) == 0) {
+      return teams[i];
+    }
+  }
+  return NULL;
+}
+
+// Function to add a team node to the teams array
+void addTeamVertix(TeamVertix* teams[], int* num_teams, const char* team_name) {
+  TeamVertix* team_vertix = (TeamVertix*)malloc(sizeof(TeamVertix));
+  strcpy(team_vertix->name, team_name);
+  team_vertix->edges = NULL;
+  team_vertix->num_edges = 0;
+  team_vertix->matches_played = 0;
+  team_vertix->wins = 0;
+  team_vertix->draws = 0;
+  team_vertix->losses = 0;
+  team_vertix->goals_for = 0;
+  team_vertix->goals_against = 0;
+  team_vertix->goal_difference = 0;
+  team_vertix->points = 0;
+  team_vertix->next = NULL;
+  team_vertix->visited = 0;
+  teams[*num_teams] = team_vertix;
+  (*num_teams)++;
+}
+
+// Function to add an edge to the team node's edges list
+void addEdge(TeamVertix* team, TeamVertix* opponent, int round, const char* date, int home_goals, int away_goals) {
+  Edge* edge = (Edge*)malloc(sizeof(Edge));
+  edge->opponent = opponent;
+  edge->round = round;
+  strcpy(edge->date, date);
+  edge->home_goals = home_goals;
+  edge->away_goals = away_goals;
+  edge->next = NULL;
+
+  if (team->edges == NULL) {
+    team->edges = edge;
+  } else {
+    Edge* curr = team->edges;
+    while (curr->next != NULL) {
+      curr = curr->next;
+    }
+    curr->next = edge;
+  }
+
+  team->num_edges++;
+}
+
+
 // Function to parse and process the match results from the file
 void parseMatchResults(FILE* file, TeamVertix* teams[], int* num_teams) {
   char line[100];
@@ -43,7 +122,25 @@ void parseMatchResults(FILE* file, TeamVertix* teams[], int* num_teams) {
         continue; // skip processing if match was canceled
       } else {
         away_goals = atoi(token);
-      }}
+      }
+      TeamVertix* home_team_vertix = findTeamVertix(teams, *num_teams, home_team);
+    if (home_team_vertix == NULL) {
+      addTeamVertix(teams, num_teams, home_team);
+      home_team_vertix = teams[*num_teams - 1];
+    }
+
+    TeamVertix* away_team_vertix = findTeamVertix(teams, *num_teams, away_team);
+    if (away_team_vertix == NULL) {
+      addTeamVertix(teams, num_teams, away_team);
+      away_team_vertix = teams[*num_teams - 1];
+    }
+
+
+    addEdge(home_team_vertix, away_team_vertix, round, date, home_goals, away_goals);
+    addEdge(away_team_vertix, home_team_vertix, round, date, away_goals, home_goals);
+      }
+
+}
 
       int main() {
   FILE* file = fopen("epl_results.CSV", "r");
