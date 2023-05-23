@@ -238,7 +238,7 @@ void printStandings(TeamVertix* teams[], int num_teams, int round_number) {
 
     if (team->matches_played > 0 && team->matches_played <= round_number) {
 
-      printf("%-5d %-20s %-9d %-5d %-5d %-5d %-5d %-5d %-5d %-7d\n", i + 1, team->name, team->matches_played, team->wins, team->drawns, team->losses, team->goals_for, team->goals_against, team->goal_difference, team->points);
+      printf("%-5d %-20s %-9d %-5d %-5d %-5d %-5d %-5d %-5d %-7d\n", i + 1, team->name, team->matches_played, team->wins, team->draws, team->losses, team->goals_for, team->goals_against, team->goal_difference, team->points);
 
     }
 
