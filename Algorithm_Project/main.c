@@ -250,7 +250,8 @@ void printStandings(TeamVertix* teams[], int num_teams, int round_number) {
 
 
 
-      int main() {
+int main() {
+
   FILE* file = fopen("epl_results.CSV", "r");
   if (file == NULL) {
     printf("Failed to open the file.\n");
@@ -267,34 +268,34 @@ void printStandings(TeamVertix* teams[], int num_teams, int round_number) {
   int round_number;
 
   // Keep asking for the round number until a valid input is provided
-while (1) {
-  printf("Enter the round number (1-30), or enter -1 to exit:");
+    while (1) {
+      printf("Enter the round number (1-30), or enter -1 to exit:");
 
-  // Variable to store the result of scanf
-  int scanf_result = scanf("%d", &round_number);
+      // Variable to store the result of scanf
+      int scanf_result = scanf("%d", &round_number);
 
-  // Check if the user wants to exit
-  if (round_number == -1) {
-    printf("Exiting...\n");
-    break;
-  }
+      // Check if the user wants to exit
+      if (round_number == -1) {
+        printf("Exiting...\n");
+        break;
+      }
 
-  // Validate the input
-  if (scanf_result != 1) {
-    printf("Invalid input. Please enter a valid round number.\n");
+      // Validate the input
+      if (scanf_result != 1) {
+        printf("Invalid input. Please enter a valid round number.\n");
 
-    // Clear the input buffer
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
+        // Clear the input buffer
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF) {}
 
-    continue;
-  }
+        continue;
+      }
 
-  // Validate the round number
-  if (round_number < 1 || round_number > 30) {
-    printf("Invalid round number. Please try again.\n");
-    continue;
-  }
+      // Validate the round number
+      if (round_number < 1 || round_number > 30) {
+        printf("Invalid round number. Please try again.\n");
+        continue;
+      }
 
   // Calculate the standings up to the specified round using BFS
   calculateStandingsBFS(teams, num_teams, round_number);

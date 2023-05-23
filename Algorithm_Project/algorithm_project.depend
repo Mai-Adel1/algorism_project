@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1684873371 source:c:\users\hp\algorism_project\algorithm_project\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
